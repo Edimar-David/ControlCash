@@ -1,40 +1,57 @@
 # Financial Dashboard API
 
-Backend de um dashboard financeiro com foco em autenticação segura e gerenciamento de transações.
+API backend para gerenciamento de finanças pessoais, com autenticação segura e operações CRUD de transações.
 
 ## Status do projeto
 
 Em desenvolvimento.
 
-Atualmente implementado:
-- Sistema de autenticação com JWT (login e registro)
-- Criptografia de senha com Spring Security
+### Funcionalidades atuais
 
-Em andamento:
-- CRUD de transações
-- Proteção completa das rotas com autenticação
+* Autenticação com JWT (registro e login)
+* Senhas criptografadas com Spring Security
+* CRUD completo de transações
+
+### Próximas melhorias
+
+* Validação de dados nos DTOs
+* Tratamento global de erros
+* Testes automatizados
+* Deploy
 
 ---
 
 ## Tecnologias
 
-- Java 21
-- Spring Boot
-- Spring Security
-- JWT (JSON Web Token)
-- JPA / Hibernate
-- Banco de dados PostgreSQL
+* Java 21
+* Spring Boot
+* Spring Security
+* JWT (JSON Web Token)
+* JPA / Hibernate
+* PostgreSQL
+
 ---
 
 ## Autenticação
 
-A API utiliza autenticação baseada em JWT. Após login ou registro, é retornado um token que deve ser enviado nas próximas requisições.
+A API utiliza JWT para autenticação.
 
-### Registro
+Após login ou registro, um token é retornado e deve ser enviado no header das requisições protegidas:
 
-POST /auth/register
+```
+Authorization: Bearer {token}
+```
 
-Request:
+---
+
+## Endpoints
+
+### Auth
+
+#### Registro
+
+`POST /auth/register`
+
 ```json
 {
   "name": "Seu Nome",
@@ -43,21 +60,10 @@ Request:
 }
 ```
 
-Response:
-```json
-{
-  "name": "Seu Nome",
-  "token": "jwt_token_aqui"
-}
-```
+#### Login
 
----
+`POST /auth/login`
 
-### Login
-
-POST /auth/login
-
-Request:
 ```json
 {
   "email": "email@email.com",
@@ -65,49 +71,41 @@ Request:
 }
 ```
 
-Response:
-```json
-{
-  "name": "Seu Nome",
-  "token": "jwt_token_aqui"
-}
-```
-
 ---
 
-## Transações
+### Transações
 
-Endpoint disponível:
+Base URL: `/transactions`
 
-POST /transaction
+#### Criar transação
 
-Request:
-```json
-{
-  // definido em TransactionRequestDTO
-}
-```
+`POST /transactions`
 
-Response:
-```json
-{
-  // definido em TransactionResponseDTO
-}
-```
+#### Listar transações
 
-Endpoints planejados:
-- Listar transações do usuário
-- Buscar transação por ID
-- Atualizar transação
-- Deletar transação
+`GET /transactions`
+
+#### Buscar por ID
+
+`GET /transactions/{id}`
+
+#### Atualizar
+
+`PUT /transactions/{id}`
+
+#### Deletar
+
+`DELETE /transactions/{id}`
+
+> Os formatos de request/response seguem os DTOs definidos na aplicação.
 
 ---
 
 ## Segurança
 
-- Senhas armazenadas com hash (PasswordEncoder)
-- Autenticação via JWT
-- Rotas protegidas (em implementação completa)
+* Senhas com hash usando `PasswordEncoder`
+* Autenticação via JWT
+* Rotas protegidas por autenticação
 
 ---
 
@@ -123,17 +121,6 @@ cd seu-repositorio
 
 ---
 
-## Próximos passos
-
-- Finalizar CRUD de transações
-- Aplicar autenticação nas rotas protegidas
-- Adicionar validações nos DTOs
-- Melhorar tratamento de erros
-- Implementar testes
-- Realizar deploy
-
----
-
 ## Observações
 
-Este projeto ainda está em fase inicial. O foco atual é consolidar a base de autenticação e estruturar corretamente o backend antes de evoluir para funcionalidades mais completas.
+Este projeto está em evolução e tem como foco consolidar boas práticas de backend com Spring Boot, incluindo segurança, organização e padrões REST.
