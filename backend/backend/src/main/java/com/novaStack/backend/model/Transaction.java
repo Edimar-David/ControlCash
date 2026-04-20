@@ -4,6 +4,7 @@ import com.novaStack.backend.DTO.TransactionRequestDTO;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,25 +16,22 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TYPE type;
-    @Column(nullable = false)
-    private String name;
 
     private String description;
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal value;
+    private BigDecimal amount;
 
     private String category;
 
-    private LocalDateTime date;
+    private LocalDate date;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public Transaction(TransactionRequestDTO dto,  User user) {
         this.type = dto.type();
-        this.name = dto.name();
         this.description = dto.description();
-        this.value = dto.value();
+        this.amount = dto.amount();
         this.category = dto.category();
         this.date = dto.date();
         this.user = user;
@@ -58,14 +56,6 @@ public class Transaction {
         this.type = type;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -74,12 +64,12 @@ public class Transaction {
         this.description = description;
     }
 
-    public BigDecimal getValue() {
-        return value;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setValue(BigDecimal value) {
-        this.value = value;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getCategory() {
@@ -90,11 +80,11 @@ public class Transaction {
         this.category = category;
     }
 
-    public LocalDateTime getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDateTime date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
