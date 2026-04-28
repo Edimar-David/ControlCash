@@ -114,22 +114,20 @@ http://localhost:8080/transactions/summary?month=6&year=2026
 
 ```json
 {
-  "month": 6,
-  "year": 2026,
+  "totalTransactions": 8
   "totalIncome": 2000,
   "totalExpense": 500,
-  "net": 1500,
-  "totalTransactions": 8
+  "totalBalance": 1500,
 }
 ```
 
 #### Regras
 
 - Considera apenas transações do mês informado  
+- `totalTransactions` representa a quantidade de transações no período  
 - `totalIncome` soma apenas entradas  
 - `totalExpense` soma apenas saídas  
-- `net` é o resultado de income - expense  
-- `totalTransactions` representa a quantidade de transações no período  
+- `totalBalance` é o resultado de income - expense  
 
 ---
 
