@@ -95,4 +95,17 @@ public class Transaction {
     public void setUser(User user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", type=" + type +
+                ", description='" + description + '\'' +
+                ", amount=" + amount +
+                ", category='" + category + '\'' +
+                ", date=" + date +
+                ", user=" + user +
+                '}';
+    }
 }

@@ -1,17 +1,20 @@
 package com.novaStack.backend.service;
 
+import com.novaStack.backend.DTO.SummaryDTO;
 import com.novaStack.backend.DTO.TransactionRequestDTO;
 import com.novaStack.backend.DTO.TransactionResponseDTO;
 import com.novaStack.backend.model.Transaction;
 import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.TransactionRepository;
 import com.novaStack.backend.repository.UserRepository;
-import org.springframework.security.core.Authentication;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,31 +25,29 @@ public class TransactionService {
     TransactionRepository repository;
     @Autowired
     UserRepository userRepository;
-
     public TransactionResponseDTO create(TransactionRequestDTO dto) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailUser = authentication.getName();
-        Optional<User> user = userRepository.findByEmail(emailUser);
-        Transaction transaction = new Transaction(dto, user.get());
-        repository.save(transaction);
-        TransactionResponseDTO responseDTO = new TransactionResponseDTO(
-                transaction.getId(),
-                transaction.getType(),
-                transaction.getDescription(),
-                transaction.getAmount(),
-                transaction.getCategory(),
-                transaction.getDate()
-        );
-        return responseDTO;
+            if(dto.amount().compareTo(BigDecimal.ZERO) > 0) {
+
+                Optional<User> user = this.findUser();
+                Transaction transaction = new Transaction(dto, user.get());
+                repository.save(transaction);
+                TransactionResponseDTO responseDTO = new TransactionResponseDTO(
+                        transaction.getId(),
+                        transaction.getType(),
+                        transaction.getDescription(),
+                        transaction.getAmount(),
+                        transaction.getCategory(),
+                        transaction.getDate()
+                );
+                return responseDTO;
+            }
+            return null;
     }
 
-    public @Nullable List<Transaction> findAll(String token) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String emailUser = authentication.getName();
-
-        User user = userRepository.findByEmail(emailUser).orElseThrow(() -> new RuntimeException());
-        List<Transaction> allTransactions = repository.findByUser(user);
+    public @Nullable List<Transaction> findAll() {
+        Optional<User> user = this.findUser();
+        List<Transaction> allTransactions = repository.findByUser(user.get());
         return allTransactions;
     }
 
@@ -86,5 +87,24 @@ public class TransactionService {
         repository.save(transaction);
 
         return null;
+    }
+
+    public SummaryDTO summary(int month, int year) {
+
+        User user = this.findUser().get();
+
+        LocalDate start = LocalDate.of(year, month, 1);
+        LocalDate end = start.plusMonths(1);
+
+        SummaryDTO summary = repository.findSummary(user, start, end);
+        System.out.println(summary);
+        return summary;
+    }
+
+    private Optional<User> findUser(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailUser = authentication.getName();
+        Optional<User> user = userRepository.findByEmail(emailUser);
+        return user;
     }
 }
