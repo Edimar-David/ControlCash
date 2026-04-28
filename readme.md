@@ -1,34 +1,28 @@
 # Financial Dashboard API
 
-API backend para gerenciamento de finanças pessoais, com autenticação segura e operações CRUD de transações.
+API backend para gerenciamento de finanças pessoais, com autenticação segura e operações sobre transações financeiras.
 
 ## Status do projeto
 
 Em desenvolvimento.
 
-### Funcionalidades atuais
+## Funcionalidades
 
-* Autenticação com JWT (registro e login)
-* Senhas criptografadas com Spring Security
-* CRUD completo de transações
-
-### Próximas melhorias
-
-* Validação de dados nos DTOs
-* Tratamento global de erros
-* Testes automatizados
-* Deploy
+- Autenticação com JWT (registro e login)
+- Senhas criptografadas com Spring Security
+- CRUD completo de transações
+- Cálculo de resumo financeiro mensal (summary)
 
 ---
 
 ## Tecnologias
 
-* Java 21
-* Spring Boot
-* Spring Security
-* JWT (JSON Web Token)
-* JPA / Hibernate
-* PostgreSQL
+- Java 21  
+- Spring Boot  
+- Spring Security  
+- JWT (JSON Web Token)  
+- JPA / Hibernate  
+- PostgreSQL  
 
 ---
 
@@ -97,15 +91,54 @@ Base URL: `/transactions`
 
 `DELETE /transactions/{id}`
 
-> Os formatos de request/response seguem os DTOs definidos na aplicação.
+---
+
+### Summary mensal
+
+Retorna um resumo financeiro baseado nas transações de um mês específico.
+
+`GET /transactions/summary?month={month}&year={year}`
+
+Exemplo:
+
+```
+http://localhost:8080/transactions/summary?month=6&year=2026
+```
+
+#### Parâmetros
+
+- `month`: mês (1 a 12)  
+- `year`: ano (ex: 2026)
+
+#### Resposta
+
+```json
+{
+  "month": 6,
+  "year": 2026,
+  "totalIncome": 2000,
+  "totalExpense": 500,
+  "net": 1500,
+  "totalTransactions": 8
+}
+```
+
+#### Regras
+
+- Considera apenas transações do mês informado  
+- `totalIncome` soma apenas entradas  
+- `totalExpense` soma apenas saídas  
+- `net` é o resultado de income - expense  
+- `totalTransactions` representa a quantidade de transações no período  
 
 ---
 
 ## Segurança
 
-* Senhas com hash usando `PasswordEncoder`
-* Autenticação via JWT
-* Rotas protegidas por autenticação
+- Senhas com hash usando PasswordEncoder  
+- Autenticação via JWT  
+- Rotas protegidas por autenticação  
+- Isolamento de dados por usuário  
 
 ---
 
@@ -113,9 +146,7 @@ Base URL: `/transactions`
 
 ```bash
 git clone https://github.com/seu-usuario/seu-repositorio.git
-
 cd seu-repositorio
-
 ./mvnw spring-boot:run
 ```
 
@@ -123,4 +154,4 @@ cd seu-repositorio
 
 ## Observações
 
-Este projeto está em evolução e tem como foco consolidar boas práticas de backend com Spring Boot, incluindo segurança, organização e padrões REST.
+Este projeto tem como foco a construção de uma API backend com regras de negócio reais, incluindo segurança, organização e separação entre dados por usuário.
