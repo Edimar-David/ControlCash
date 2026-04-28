@@ -114,10 +114,10 @@ http://localhost:8080/transactions/summary?month=6&year=2026
 
 ```json
 {
-  "totalTransactions": 8
+  "totalTransactions": 8,
   "totalIncome": 2000,
   "totalExpense": 500,
-  "totalBalance": 1500,
+  "totalBalance": 1500
 }
 ```
 
