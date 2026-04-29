@@ -99,25 +99,6 @@ Retorna um resumo financeiro baseado nas transações de um mês específico.
 
 `GET /transactions/summary?month={month}&year={year}`
 
-Query:
-```
-        SELECT new com.novaStack.backend.DTO.SummaryDTO(
-        COUNT(t) as totalTransactions,
-        
-        COALESCE(SUM(CASE WHEN t.type = 'INCOME' then t.amount
-        ELSE 0 END), 0) AS totalIncome,
-
-        COALESCE(SUM(CASE WHEN t.type = 'EXPENSE' then t.amount
-        ELSE 0 END),0) AS totalExpense,
-
-        COALESCE(SUM(CASE WHEN t.type = 'INCOME'	THEN t.amount WHEN t.type = 'EXPENSE'
-        THEN -t.amount ELSE 0 END), 0) AS totalBalance
-    )
-    FROM Transaction t
-        WHERE t.date < :end
-        AND t.date >= :start 
-        AND t.user = :user 
-```
 Exemplo:
 
 ```
@@ -140,6 +121,25 @@ http://localhost:8080/transactions/summary?month=6&year=2026
 }
 ```
 
+Query:
+```
+        SELECT new com.novaStack.backend.DTO.SummaryDTO(
+        COUNT(t) as totalTransactions,
+        
+        COALESCE(SUM(CASE WHEN t.type = 'INCOME' then t.amount
+        ELSE 0 END), 0) AS totalIncome,
+
+        COALESCE(SUM(CASE WHEN t.type = 'EXPENSE' then t.amount
+        ELSE 0 END),0) AS totalExpense,
+
+        COALESCE(SUM(CASE WHEN t.type = 'INCOME'	THEN t.amount WHEN t.type = 'EXPENSE'
+        THEN -t.amount ELSE 0 END), 0) AS totalBalance
+    )
+    FROM Transaction t
+        WHERE t.date < :end
+        AND t.date >= :start 
+        AND t.user = :user 
+```
 #### Regras
 
 - Considera apenas transações do mês informado  
