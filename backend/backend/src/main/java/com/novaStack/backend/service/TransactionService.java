@@ -3,12 +3,18 @@ package com.novaStack.backend.service;
 import com.novaStack.backend.DTO.SummaryDTO;
 import com.novaStack.backend.DTO.TransactionRequestDTO;
 import com.novaStack.backend.DTO.TransactionResponseDTO;
+import com.novaStack.backend.model.TYPE;
 import com.novaStack.backend.model.Transaction;
 import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.TransactionRepository;
 import com.novaStack.backend.repository.UserRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,10 +23,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
 
+
+    @PersistenceContext
+    EntityManager em;
     @Autowired
     TransactionRepository repository;
     @Autowired
@@ -99,6 +109,56 @@ public class TransactionService {
         SummaryDTO summary = repository.findSummary(user, start, end);
         System.out.println(summary);
         return summary;
+    }
+
+    public List<TransactionResponseDTO> getPageTransactions(LocalDate startDate, LocalDate endDate, TYPE type, Integer page, Integer size) {
+        User user = this.findUser().get();
+        if(page == null) page = 0;
+        if(size == null) size = 10;
+        Pageable pageable = PageRequest.of(page, size);
+
+        System.out.println("teste1");
+        StringBuilder jpql = new StringBuilder("SELECT t FROM Transaction t WHERE ");
+        jpql.append("t.user = :user");
+        if (startDate != null) {
+            jpql.append(" AND t.date > :startDate");
+        }
+
+        if (endDate != null) {
+            jpql.append(" AND t.date < :endDate");
+        }
+
+        if (type != null) {
+            jpql.append(" AND t.type = :type");
+        }
+            jpql.append(" ORDER BY t.date DESC");
+
+        TypedQuery<Transaction> query = em.createQuery(jpql.toString(), Transaction.class);
+
+        query.setParameter("user", user);
+        if (startDate != null) query.setParameter("startDate", startDate);
+        if (endDate != null) query.setParameter("endDate", endDate);
+        if (type != null) query.setParameter("type", type);
+
+
+        query.setFirstResult((int) pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+
+        List<Transaction> transactions = query.getResultList();
+
+        List<TransactionResponseDTO> transactionsDTO =  transactions.stream().map(
+                t -> new TransactionResponseDTO(
+                                            t.getId(),
+                                            t.getType(),
+                                            t.getDescription(),
+                                            t.getAmount(),
+                                            t.getCategory(),
+                                            t.getDate()
+                                            ))
+                .collect(Collectors.toList());
+
+        transactionsDTO.forEach(System.out::println);
+        return transactionsDTO;
     }
 
     private Optional<User> findUser(){

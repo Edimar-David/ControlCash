@@ -1,7 +1,9 @@
 package com.novaStack.backend.controller;
+
 import com.novaStack.backend.DTO.SummaryDTO;
 import com.novaStack.backend.DTO.TransactionRequestDTO;
 import com.novaStack.backend.DTO.TransactionResponseDTO;
+import com.novaStack.backend.model.TYPE;
 import com.novaStack.backend.model.Transaction;
 import com.novaStack.backend.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/transaction")
@@ -40,19 +42,30 @@ public class TransactionController {
         return ResponseEntity.ok().body(summary);
     }
 
+    @GetMapping("/filter")
+    public List<TransactionResponseDTO> getPageTransactions(@RequestParam (required = false) LocalDate startDate,
+                                                            @RequestParam (required = false) LocalDate endDate,
+                                                            @RequestParam (required = false) TYPE type,
+                                                            @RequestParam (required = false) Integer page,
+                                                            @RequestParam (required = false) Integer size){
+
+        return service.getPageTransactions(startDate, endDate, type, page, size);
+    }
+
     @GetMapping("/{id:\\d+}")
     public ResponseEntity<TransactionResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id:\\d+}")
     public ResponseEntity<TransactionResponseDTO> update(@PathVariable Long id, @RequestBody TransactionRequestDTO dto) {
 
-        return ResponseEntity.ok(service.update(id, dto));
+        TransactionResponseDTO transaction = service.update(id, dto);
+        return ResponseEntity.ok().body(transaction);
     }
 
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id:\\d+}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
