@@ -102,11 +102,11 @@ GET `/transaction/filter`
 ```
 Query Params (todos opcionais)
 Parâmetro |	Tipo     	| Descrição
-startDate |	LocalDate |	Data inicial (YYYY-MM-DD)
+startDate |	LocalDate   |	Data inicial (YYYY-MM-DD)
 endDate	  |LocalDate	| Data final (YYYY-MM-DD)
-type	    | ENUM	    | INCOME ou EXPENSE
-page	    | Integer	  | Página (default: 0)
-size      |	Integer	  | Tamanho da página (default: 10)
+type	  | ENUM	    | INCOME ou EXPENSE
+page	  | Integer	    | Página (default: 0)
+size      |	Integer	    | Tamanho da página (default: 10)
 ```
 exemplo:
 `http://localhost:8080/transaction/filter?startDate=2026-06-01&endDate=2026-06-30&type=INCOME&page=0&size=10`
