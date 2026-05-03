@@ -181,11 +181,12 @@ Este projeto tem como foco simular um backend real de mercado, incluindo:
   ---
 
   ## Próximas melhorias
-- Retornar Page<T> ao invés de List<T> (melhor prática)
+- Retornar Page<T> ao invés de List<T>
 - Adicionar total de páginas no response
 - Implementar Specification (Criteria API) ao invés de JPQL manual
 - Validação com Bean Validation
 - Tratamento global de exceções
 - Testes automatizados
+  
   ---
   
