@@ -108,14 +108,16 @@ type	  | ENUM	    | INCOME ou EXPENSE
 page	  | Integer	    | Página (default: 0)
 size      |	Integer	    | Tamanho da página (default: 10)
 ```
-exemplo:
-`http://localhost:8080/transaction/filter?startDate=2026-06-01&endDate=2026-06-30&type=INCOME&page=0&size=10`
 Comportamento:
 -Todos os filtros são opcionais
 -A query é construída dinamicamente no backend
 -Os resultados são ordenados por data (mais recente primeiro)
 *Paginação feita via setFirstResult e setMaxResults
-## resposta
+
+### exemplo:
+`http://localhost:8080/transaction/filter?startDate=2026-06-01&endDate=2026-06-30&type=INCOME&page=0&size=10`
+
+#### resposta
 ```json
 [
   {
