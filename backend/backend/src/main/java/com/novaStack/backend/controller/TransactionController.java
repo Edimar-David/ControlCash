@@ -30,10 +30,10 @@ public class TransactionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Transaction>> findAll() {
-        return ResponseEntity.ok(service.findAll());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Transaction>> findAll() {
+//        return ResponseEntity.ok(service.findAll());
+//    }
 
     @GetMapping("/summary")
     public ResponseEntity<SummaryDTO> getSummary(@RequestParam int month, @RequestParam int year) {
@@ -42,7 +42,7 @@ public class TransactionController {
         return ResponseEntity.ok().body(summary);
     }
 
-    @GetMapping("/filter")
+    @GetMapping
     public List<TransactionResponseDTO> getPageTransactions(@RequestParam (required = false) LocalDate startDate,
                                                             @RequestParam (required = false) LocalDate endDate,
                                                             @RequestParam (required = false) TYPE type,
@@ -53,9 +53,16 @@ public class TransactionController {
     }
 
     @GetMapping("/{id:\\d+}")
-    public ResponseEntity<TransactionResponseDTO> findById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+    public ResponseEntity<?> findById(@PathVariable Long id) {
+        try {
+            TransactionResponseDTO responseDTO = service.findById(id);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseDTO);
+        }catch (RuntimeException e) {
+            //new RuntimeException(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
+
 
     @PutMapping("/{id:\\d+}")
     public ResponseEntity<TransactionResponseDTO> update(@PathVariable Long id, @RequestBody TransactionRequestDTO dto) {

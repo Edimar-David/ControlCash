@@ -70,7 +70,6 @@ public class TransactionService {
 
     public TransactionResponseDTO findById(Long id) {
         Optional<Transaction> transactionOptional = repository.findById(id);
-        if(transactionOptional.isPresent()){
             Transaction transaction = transactionOptional.get();
             TransactionResponseDTO dto = new TransactionResponseDTO(
                     transaction.getId(),
@@ -80,9 +79,7 @@ public class TransactionService {
                     transaction.getCategory(),
                     transaction.getDate());
             return dto;
-        }else{
-            return null;
-        }
+
     }
 
     public @Nullable TransactionResponseDTO update(Long id, TransactionRequestDTO dto) {
@@ -117,7 +114,6 @@ public class TransactionService {
         if(size == null) size = 10;
         Pageable pageable = PageRequest.of(page, size);
 
-        System.out.println("teste1");
         StringBuilder jpql = new StringBuilder("SELECT t FROM Transaction t WHERE ");
         jpql.append("t.user = :user");
         if (startDate != null) {
