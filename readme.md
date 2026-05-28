@@ -102,20 +102,22 @@ GET `/transaction/filter`
 ```
 Query Params (todos opcionais)
 Parâmetro |	Tipo     	| Descrição
-startDate |	LocalDate |	Data inicial (YYYY-MM-DD)
+startDate |	LocalDate   |	Data inicial (YYYY-MM-DD)
 endDate	  |LocalDate	| Data final (YYYY-MM-DD)
-type	    | ENUM	    | INCOME ou EXPENSE
-page	    | Integer	  | Página (default: 0)
-size      |	Integer	  | Tamanho da página (default: 10)
+type	  | ENUM	    | INCOME ou EXPENSE
+page	  | Integer	    | Página (default: 0)
+size      |	Integer	    | Tamanho da página (default: 10)
 ```
-exemplo:
-`http://localhost:8080/transaction/filter?startDate=2026-06-01&endDate=2026-06-30&type=INCOME&page=0&size=10`
 Comportamento:
 -Todos os filtros são opcionais
 -A query é construída dinamicamente no backend
 -Os resultados são ordenados por data (mais recente primeiro)
 *Paginação feita via setFirstResult e setMaxResults
-## resposta
+
+### exemplo:
+`http://localhost:8080/transaction/filter?startDate=2026-06-01&endDate=2026-06-30&type=INCOME&page=0&size=10`
+
+#### resposta
 ```json
 [
   {
@@ -181,11 +183,12 @@ Este projeto tem como foco simular um backend real de mercado, incluindo:
   ---
 
   ## Próximas melhorias
-- Retornar Page<T> ao invés de List<T> (melhor prática)
+- Retornar Page<T> ao invés de List<T>
 - Adicionar total de páginas no response
 - Implementar Specification (Criteria API) ao invés de JPQL manual
 - Validação com Bean Validation
 - Tratamento global de exceções
 - Testes automatizados
+  
   ---
   
