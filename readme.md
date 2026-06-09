@@ -1,51 +1,60 @@
 # Financial Dashboard API
 
-API backend para gerenciamento de finanças pessoais, com autenticação segura, regras de negócio e suporte a filtros dinâmicos com paginação.
+API REST para gerenciamento de finanças pessoais, desenvolvida com Spring Boot. O projeto implementa autenticação segura, isolamento de dados por usuário, filtros dinâmicos, paginação e geração de resumos financeiros.
 
-## Status do projeto
+## Status
 
-Em desenvolvimento.
+🚧 Em desenvolvimento
 
 ---
 
 ## Funcionalidades
 
-- Autenticação com JWT (registro e login)
-- Senhas criptografadas com Spring Security
-- CRUD completo de transações
-- Filtro dinâmico por data e tipo
-- Paginação de resultados
-- Cálculo de resumo financeiro mensal (summary)
-- Isolamento de dados por usuário
+* Cadastro e autenticação de usuários
+* Autenticação baseada em JWT
+* Armazenamento do token JWT em cookie seguro
+* Senhas criptografadas com Spring Security
+* CRUD completo de transações financeiras
+* Filtros dinâmicos por período e tipo
+* Paginação de resultados
+* Resumo financeiro mensal
+* Isolamento de dados por usuário autenticado
 
 ---
 
 ## Tecnologias
 
-- Java 21  
-- Spring Boot  
-- Spring Security  
-- JWT (JSON Web Token)  
-- JPA / Hibernate  
-- PostgreSQL  
+* Java 21
+* Spring Boot
+* Spring Security
+* JWT (JSON Web Token)
+* Spring Data JPA
+* Hibernate
+* PostgreSQL
 
 ---
 
 ## Autenticação
 
-A API utiliza JWT para autenticação.
+A API utiliza JWT armazenado em cookie.
 
-Após login ou registro, um token é retornado e deve ser enviado no header das requisições protegidas:
+Após o login ou registro, o backend envia automaticamente um cookie contendo o token de autenticação.
 
-Authorization: Bearer {token}
+As rotas protegidas utilizam esse cookie para identificar o usuário autenticado, eliminando a necessidade de armazenar tokens no localStorage do frontend.
+
+### Benefícios
+
+* Maior segurança contra exposição do token
+* Menor risco de acesso indevido via JavaScript
+* Fluxo de autenticação mais próximo de aplicações utilizadas em produção
 
 ---
 
-## Endpoints
+# Endpoints
 
-### Auth
+## Auth
 
-#### Registro
+### Registrar usuário
 
 `POST /auth/register`
 
@@ -56,10 +65,11 @@ Authorization: Bearer {token}
   "password": "123456"
 }
 ```
-Login
 
+### Login
 
 `POST /auth/login`
+
 ```json
 {
   "email": "email@email.com",
@@ -67,57 +77,83 @@ Login
 }
 ```
 
-Transações
+---
 
-Base URL: `/transaction`
+## Transações
 
-Criar transação
+Base URL:
 
-`POST /transaction`
+```http
+/transaction
+```
 
-Listar todas
+### Criar transação
 
-`GET /transaction`
+```http
+POST /transaction
+```
 
-Buscar por ID
+### Listar transações
 
-`GET /transaction/{id}`
+```http
+GET /transaction
+```
 
-Atualizar
+### Buscar por ID
 
-`PUT /transaction/{id}`
+```http
+GET /transaction/{id}
+```
 
-Deletar
+### Atualizar transação
 
-`DELETE /transaction/{id}`
+```http
+PUT /transaction/{id}
+```
+
+### Remover transação
+
+```http
+DELETE /transaction/{id}
+```
 
 ---
 
-## Filtro + Paginação (NOVO)
+## Filtros e Paginação
 
-Permite buscar transações com filtros opcionais e paginação.
+Permite buscar transações utilizando filtros opcionais.
 
-GET `/transaction/filter`
+### Endpoint
 
+```http
+GET /transaction/filter
 ```
-Query Params (todos opcionais)
-Parâmetro |	Tipo     	| Descrição
-startDate |	LocalDate   |	Data inicial (YYYY-MM-DD)
-endDate	  |LocalDate	| Data final (YYYY-MM-DD)
-type	  | ENUM	    | INCOME ou EXPENSE
-page	  | Integer	    | Página (default: 0)
-size      |	Integer	    | Tamanho da página (default: 10)
+
+### Query Params
+
+| Parâmetro | Tipo      | Descrição                           |
+| --------- | --------- | ----------------------------------- |
+| startDate | LocalDate | Data inicial (YYYY-MM-DD)           |
+| endDate   | LocalDate | Data final (YYYY-MM-DD)             |
+| type      | ENUM      | INCOME ou EXPENSE                   |
+| page      | Integer   | Página (default: 0)                 |
+| size      | Integer   | Quantidade por página (default: 10) |
+
+### Regras
+
+* Todos os filtros são opcionais
+* Consulta construída dinamicamente no backend
+* Ordenação por data decrescente
+* Paginação aplicada diretamente na consulta
+
+### Exemplo
+
+```http
+GET /transaction/filter?startDate=2026-06-01&endDate=2026-06-30&type=INCOME&page=0&size=10
 ```
-Comportamento:
--Todos os filtros são opcionais
--A query é construída dinamicamente no backend
--Os resultados são ordenados por data (mais recente primeiro)
-*Paginação feita via setFirstResult e setMaxResults
 
-### exemplo:
-`http://localhost:8080/transaction/filter?startDate=2026-06-01&endDate=2026-06-30&type=INCOME&page=0&size=10`
+### Resposta
 
-#### resposta
 ```json
 [
   {
@@ -130,15 +166,27 @@ Comportamento:
   }
 ]
 ```
+
 ---
 
-## Summar mensal
+## Resumo Mensal
 
-Retorna um resumo financeiro baseado nas transações de um mês específico.
-GET `/transaction/summary?month={month}&year={year}`
-exemplo:
-`http://localhost:8080/transaction/summary?month=6&year=2026`
-resposta:
+Retorna um resumo financeiro para um determinado mês.
+
+### Endpoint
+
+```http
+GET /transaction/summary?month={month}&year={year}
+```
+
+### Exemplo
+
+```http
+GET /transaction/summary?month=6&year=2026
+```
+
+### Resposta
+
 ```json
 {
   "totalTransactions": 8,
@@ -147,48 +195,57 @@ resposta:
   "totalBalance": 1500
 }
 ```
-## Regras
-- Considera apenas transações do mês informado
-- totalTransactions: quantidade total
-- totalIncome: soma de entradas
-- totalExpense: soma de saídas
-- totalBalance: income - expense
+
+### Regras
+
+* Considera apenas transações do mês informado
+* totalTransactions → quantidade de transações
+* totalIncome → soma das entradas
+* totalExpense → soma das saídas
+* totalBalance → saldo final (income - expense)
 
 ---
 
 ## Segurança
-- Senhas com hash usando PasswordEncoder
-- Autenticação via JWT
-- Rotas protegidas
-- Isolamento de dados por usuário
-  
-  ---
-  ##Como executar
-  ```
-  git clone https://github.com/seu-usuario/seu-repositorio.git
-  cd seu-repositorio
-  ./mvnw spring-boot:run
-  
-  ```
 
-  ### Observações
+* Senhas protegidas com PasswordEncoder
+* JWT armazenado em cookie
+* Rotas protegidas por autenticação
+* Isolamento de dados por usuário
+* Filtros de segurança via Spring Security
 
-Este projeto tem como foco simular um backend real de mercado, incluindo:
+---
 
-- Construção de queries dinâmicas
-- Paginação eficiente
-- Separação de responsabilidades (Controller, Service, DTO)
-- Regras de negócio aplicadas
+## Como Executar
 
-  ---
+```bash
+git clone https://github.com/seu-usuario/seu-repositorio.git
 
-  ## Próximas melhorias
-- Retornar Page<T> ao invés de List<T>
-- Adicionar total de páginas no response
-- Implementar Specification (Criteria API) ao invés de JPQL manual
-- Validação com Bean Validation
-- Tratamento global de exceções
-- Testes automatizados
-  
-  ---
-  
+cd seu-repositorio
+
+./mvnw spring-boot:run
+```
+
+---
+
+## Arquitetura
+
+O projeto segue uma separação de responsabilidades baseada em:
+
+* Controller
+* Service
+* Repository
+* DTO
+* Security
+
+---
+
+## Próximas Melhorias
+
+* Retornar Page<T> em vez de List<T>
+* Adicionar metadados de paginação
+* Implementar Specification (Criteria API)
+* Bean Validation
+* Tratamento global de exceções
+* Testes automatizados
+* Documentação com Swagger/OpenAPI
