@@ -36,9 +36,9 @@ public class TransactionController {
 //    }
 
     @GetMapping("/summary")
-    public ResponseEntity<SummaryDTO> getSummary(@RequestParam int month, @RequestParam int year) {
+    public ResponseEntity<SummaryDTO> getSummary(/*@RequestParam int month, @RequestParam int year */) {
 
-       SummaryDTO summary = service.summary(month, year);
+       SummaryDTO summary = service.summary(/*month, year*/);
         return ResponseEntity.ok().body(summary);
     }
 

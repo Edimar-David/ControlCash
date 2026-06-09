@@ -32,10 +32,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
         THEN -t.amount ELSE 0 END), 0) AS totalBalance
     )
     FROM Transaction t
-        WHERE t.date < :end
-        AND t.date >= :start 
-        AND t.user = :user""")
-    SummaryDTO findSummary(User user, LocalDate start, LocalDate end);
+    WHERE 
+       t.user = :user""")
+    SummaryDTO findSummary(User user /*, LocalDate start, LocalDate end*/);
+
+
 
     @Query("""
     SELECT t

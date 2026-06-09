@@ -35,12 +35,13 @@ public class TransactionService {
     TransactionRepository repository;
     @Autowired
     UserRepository userRepository;
+
     public TransactionResponseDTO create(TransactionRequestDTO dto) {
 
             if(dto.amount().compareTo(BigDecimal.ZERO) > 0) {
 
-                Optional<User> user = this.findUser();
-                Transaction transaction = new Transaction(dto, user.get());
+                User user = this.findUser();
+                Transaction transaction = new Transaction(dto, user);
                 repository.save(transaction);
                 TransactionResponseDTO responseDTO = new TransactionResponseDTO(
                         transaction.getId(),
@@ -56,8 +57,8 @@ public class TransactionService {
     }
 
     public @Nullable List<Transaction> findAll() {
-        Optional<User> user = this.findUser();
-        List<Transaction> allTransactions = repository.findByUser(user.get());
+        User user = this.findUser();
+        List<Transaction> allTransactions = repository.findByUser(user);
         return allTransactions;
     }
 
@@ -96,20 +97,20 @@ public class TransactionService {
         return null;
     }
 
-    public SummaryDTO summary(int month, int year) {
+    public SummaryDTO summary(/*int month, int year*/) {
 
-        User user = this.findUser().get();
+        User user = this.findUser();
 
-        LocalDate start = LocalDate.of(year, month, 1);
-        LocalDate end = start.plusMonths(1);
+//        LocalDate start = LocalDate.of(year, month, 1);
+//        LocalDate end = start.plusMonths(1);
 
-        SummaryDTO summary = repository.findSummary(user, start, end);
+        SummaryDTO summary = repository.findSummary(user /*, start, end */);
         System.out.println(summary);
         return summary;
     }
 
     public List<TransactionResponseDTO> getPageTransactions(LocalDate startDate, LocalDate endDate, TYPE type, Integer page, Integer size) {
-        User user = this.findUser().get();
+        User user = this.findUser();
         if(page == null) page = 0;
         if(size == null) size = 10;
         Pageable pageable = PageRequest.of(page, size);
@@ -157,10 +158,10 @@ public class TransactionService {
         return transactionsDTO;
     }
 
-    private Optional<User> findUser(){
+    private User findUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String emailUser = authentication.getName();
-        Optional<User> user = userRepository.findByEmail(emailUser);
+        User user = (User) authentication.getPrincipal();
         return user;
     }
 }
