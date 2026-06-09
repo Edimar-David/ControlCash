@@ -4,7 +4,7 @@ API REST para gerenciamento de finanças pessoais, desenvolvida com Spring Boot.
 
 ## Status
 
-🚧 Em desenvolvimento
+Em desenvolvimento
 
 ---
 
