@@ -6,8 +6,8 @@ A aplicação disponibiliza uma API REST segura para gerenciamento financeiro pe
 
 ## Status
 
-- Em desenvolvimento
-- Demonstração pública ainda não disponível
+* Em desenvolvimento
+* Demonstração pública ainda não disponível
 
 ---
 
@@ -21,14 +21,14 @@ O ControlCash foi desenvolvido para centralizar o gerenciamento financeiro pesso
 
 ## Funcionalidades
 
-- Cadastro e autenticação de usuários
-- Controle de acesso com JWT
-- CRUD completo de transações financeiras
-- Paginação com filtros dinâmicos para consultas de transações
-- Consultas dinâmicas utilizando JPQL
-- Agregações financeiras processadas diretamente no banco de dados
-- Resumo financeiro mensal
-- Isolamento de dados por usuário
+* Cadastro e autenticação de usuários
+* Controle de acesso com JWT
+* CRUD completo de transações financeiras
+* Paginação com filtros dinâmicos para consultas de transações
+* Consultas dinâmicas utilizando JPQL
+* Agregações financeiras processadas diretamente no banco de dados
+* Resumo financeiro mensal
+* Isolamento de dados por usuário
 
 ---
 # Arquitetura
@@ -37,16 +37,16 @@ O ControlCash foi desenvolvido para centralizar o gerenciamento financeiro pesso
  
 ---
 
-## Tecnologias
+## - Tecnologias
 
-- Java 21
-- Spring Boot
-- Maven
-- Spring Security
-- JWT (JSON Web Token)
-- Spring Data JPA
-- Hibernate
-- PostgreSQL
+* Java 21
+* Spring Boot
+* Maven
+* Spring Security
+* JWT (JSON Web Token)
+* Spring Data JPA
+* Hibernate
+* PostgreSQL
 
 ---
 # Estrutura do Projeto
