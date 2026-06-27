@@ -25,12 +25,16 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-    @Autowired
+
     private UserRepository repository;
-    @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
     private TokenService tokenService;
+
+    public AuthController(UserRepository repository, PasswordEncoder passwordEncoder, TokenService tokenService) {
+        this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenService = tokenService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto, HttpServletResponse response){
