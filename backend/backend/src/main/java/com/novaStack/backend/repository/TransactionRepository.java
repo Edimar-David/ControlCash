@@ -1,11 +1,9 @@
 package com.novaStack.backend.repository;
 
-import com.novaStack.backend.DTO.SummaryDTO;
+import com.novaStack.backend.dto.transactions.SummaryDTO;
 import com.novaStack.backend.model.TYPE;
 import com.novaStack.backend.model.Transaction;
 import com.novaStack.backend.model.User;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,7 +17,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByUser(User user);
 
 @Query("""
-    SELECT new com.novaStack.backend.DTO.SummaryDTO(
+    SELECT new com.novaStack.backend.dto.transactions.SummaryDTO(
         COUNT(t) as totalTransactions,
         
         COALESCE(SUM(CASE WHEN t.type = 'INCOME' then t.amount

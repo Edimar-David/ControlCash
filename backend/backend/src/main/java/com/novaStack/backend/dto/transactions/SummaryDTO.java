@@ -1,4 +1,4 @@
-package com.novaStack.backend.DTO;
+package com.novaStack.backend.dto.transactions;
 
 import java.math.BigDecimal;
 

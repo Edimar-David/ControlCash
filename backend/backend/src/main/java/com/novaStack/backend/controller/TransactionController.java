@@ -1,10 +1,9 @@
 package com.novaStack.backend.controller;
 
-import com.novaStack.backend.DTO.SummaryDTO;
-import com.novaStack.backend.DTO.TransactionRequestDTO;
-import com.novaStack.backend.DTO.TransactionResponseDTO;
+import com.novaStack.backend.dto.transactions.SummaryDTO;
+import com.novaStack.backend.dto.transactions.TransactionRequestDTO;
+import com.novaStack.backend.dto.transactions.TransactionResponseDTO;
 import com.novaStack.backend.model.TYPE;
-import com.novaStack.backend.model.Transaction;
 import com.novaStack.backend.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

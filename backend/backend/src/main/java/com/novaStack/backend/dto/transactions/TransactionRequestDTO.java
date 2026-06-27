@@ -1,13 +1,11 @@
-package com.novaStack.backend.DTO;
+package com.novaStack.backend.dto.transactions;
 
 import com.novaStack.backend.model.TYPE;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public record TransactionResponseDTO(
-        Long id,
+public record TransactionRequestDTO(
         TYPE type,
         String description,
         BigDecimal amount,

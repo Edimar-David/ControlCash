@@ -1,11 +1,10 @@
 package com.novaStack.backend.model;
 
-import com.novaStack.backend.DTO.TransactionRequestDTO;
+import com.novaStack.backend.dto.transactions.TransactionRequestDTO;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 public class Transaction {

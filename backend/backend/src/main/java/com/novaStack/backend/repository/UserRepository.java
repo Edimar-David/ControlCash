@@ -1,6 +1,5 @@
 package com.novaStack.backend.repository;
 
-import com.novaStack.backend.DTO.UserResponseDTO;
 import com.novaStack.backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

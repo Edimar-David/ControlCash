@@ -1,9 +1,9 @@
 package com.novaStack.backend.controller;
 
 
-import com.novaStack.backend.DTO.LoginRequestDTO;
-import com.novaStack.backend.DTO.RegisterRequestDTO;
-import com.novaStack.backend.DTO.UserResponseDTO;
+import com.novaStack.backend.dto.auth.LoginRequestDTO;
+import com.novaStack.backend.dto.auth.RegisterRequestDTO;
+import com.novaStack.backend.dto.auth.UserResponseDTO;
 import com.novaStack.backend.infra.security.TokenService;
 import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.UserRepository;
