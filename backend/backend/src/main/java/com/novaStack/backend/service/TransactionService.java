@@ -29,12 +29,18 @@ import java.util.stream.Collectors;
 public class TransactionService {
 
 
-    @PersistenceContext
+    //@PersistenceContext
     EntityManager em;
-    @Autowired
+    //@Autowired
     TransactionRepository repository;
-    @Autowired
+//    @Autowired
     UserRepository userRepository;
+
+    public TransactionService(EntityManager em, TransactionRepository repository, UserRepository userRepository) {
+        this.em = em;
+        this.repository = repository;
+        this.userRepository = userRepository;
+    }
 
     public TransactionResponseDTO create(TransactionRequestDTO dto) {
 
