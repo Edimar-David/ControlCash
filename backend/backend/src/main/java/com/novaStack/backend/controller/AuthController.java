@@ -8,13 +8,11 @@ import com.novaStack.backend.dto.auth.UserResponseDTO;
 import com.novaStack.backend.infra.security.TokenService;
 import com.novaStack.backend.service.AuthService;
 import com.novaStack.backend.service.CookieService;
+import com.novaStack.backend.service.OtpService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -23,17 +21,20 @@ public class AuthController {
     private final AuthService service;
     private final TokenService tokenService;
     private final CookieService cookieService;
+    private final OtpService otpService;
 
-    public AuthController(AuthService service, TokenService tokenService, CookieService cookieService) {
+    public AuthController(AuthService service, TokenService tokenService, CookieService cookieService, OtpService otpService) {
         this.service = service;
         this.tokenService = tokenService;
         this.cookieService = cookieService;
+        this.otpService = otpService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<UserResponseDTO> login(@RequestBody LoginRequestDTO dto, HttpServletResponse httpServletResponse){
 
         AuthenticatedResponseDTO user = service.login(dto);
+        otpService.createOtp(user.email());
 
         return authenticateUser(user, httpServletResponse);
     }
@@ -58,6 +59,12 @@ public class AuthController {
         cookieService.createCookie(token, httpServletResponse);
 
         return ResponseEntity.ok(new UserResponseDTO(user.name()));
+    }
+
+    @GetMapping("/login")
+    public ResponseEntity<Void> deleteOtp(){
+        otpService.deleteOtp();
+        return ResponseEntity.noContent().build();
     }
 }
 

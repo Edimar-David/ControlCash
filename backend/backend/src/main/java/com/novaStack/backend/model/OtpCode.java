@@ -19,9 +19,12 @@ public class OtpCode {
 
     private LocalDateTime expiresAt;
 
-    private boolean used;
 
-
+    public OtpCode(String email, String otpHash, LocalDateTime expiresAt) {
+        this.email = email;
+        this.otpHash = otpHash;
+        this.expiresAt = expiresAt;
+    }
 
     public OtpCode() {
     }
@@ -58,11 +61,13 @@ public class OtpCode {
         this.expiresAt = expiresAt;
     }
 
-    public boolean isUsed() {
-        return used;
-    }
-
-    public void setUsed(boolean used) {
-        this.used = used;
+    @Override
+    public String toString() {
+        return "OtpCode{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", otpHash='" + otpHash + '\'' +
+                ", expiresAt=" + expiresAt +
+                '}';
     }
 }
