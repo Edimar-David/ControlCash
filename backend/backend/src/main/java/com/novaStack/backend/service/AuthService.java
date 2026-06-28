@@ -1,14 +1,11 @@
 package com.novaStack.backend.service;
 
+import com.novaStack.backend.dto.auth.AuthenticatedResponseDTO;
 import com.novaStack.backend.dto.auth.LoginRequestDTO;
 import com.novaStack.backend.dto.auth.RegisterRequestDTO;
-import com.novaStack.backend.dto.auth.UserResponseDTO;
-import com.novaStack.backend.infra.security.TokenService;
 import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
-import org.jspecify.annotations.NonNull;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +15,14 @@ import java.util.Optional;
 public class AuthService {
 
     private final UserRepository repository;
-    private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
-    private final CookieService cookieService;
 
-    public AuthService(UserRepository repository, TokenService tokenService, PasswordEncoder passwordEncoder, CookieService cookieService) {
+    public AuthService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
-        this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
-        this.cookieService = cookieService;
     }
 
-    public ResponseEntity<?> login(LoginRequestDTO dto, HttpServletResponse httpServletResponse) {
+    public AuthenticatedResponseDTO login(LoginRequestDTO dto) {
         Optional<User> userOptional = this.repository.findByEmail(dto.email());
         if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("Invalid credentials");
@@ -40,25 +33,26 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid credentials");
         }
 
-        return authenticateUser(user, httpServletResponse);
+        return convertToResponseDTO(user);
+
     }
 
-    public ResponseEntity<?> register(RegisterRequestDTO dto, HttpServletResponse httpServletResponse) {
+    public AuthenticatedResponseDTO register(RegisterRequestDTO dto) {
         Optional<User> userOptional = this.repository.findByEmail(dto.email());
         if(userOptional.isPresent()) {
             throw new IllegalArgumentException("Email already registered");
         }
             User user = new User(dto.name(), dto.email(), passwordEncoder.encode(dto.password()));
             this.repository.save(user);
-            return authenticateUser(user, httpServletResponse);
+            return convertToResponseDTO(user);
     }
 
+    private AuthenticatedResponseDTO convertToResponseDTO(User user){
 
-    @NonNull
-    private ResponseEntity<?> authenticateUser(User user, HttpServletResponse httpServletResponse) {
-        String token = this.tokenService.generateToken(user);
-        cookieService.createCookie(token, httpServletResponse);
-
-        return ResponseEntity.ok(new UserResponseDTO(user.getName()));
+        return new AuthenticatedResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
     }
 }

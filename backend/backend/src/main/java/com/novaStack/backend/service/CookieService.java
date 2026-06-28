@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CookieService {
+
+
     public void createCookie(String token, HttpServletResponse httpServletResponse){
         ResponseCookie cookie = ResponseCookie.from("access_token", token)
                 .httpOnly(true)

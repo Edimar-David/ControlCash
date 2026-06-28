@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.novaStack.backend.dto.auth.AuthenticatedResponseDTO;
 import com.novaStack.backend.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,14 +17,15 @@ import java.time.ZoneOffset;
 public class TokenService {
     @Value("api.security.token.secret")
     private String secretkey;
-    public String generateToken(User user){
+
+    public String generateToken(AuthenticatedResponseDTO user){
 
     try {
         Algorithm algorithm = Algorithm.HMAC256(secretkey);
 
         String token = JWT.create()
                 .withIssuer("login-auth-api")
-                .withSubject(user.getEmail())
+                .withSubject(user.email())
                 .withExpiresAt(this.generateExpirationDate())
                 .sign(algorithm);
 
