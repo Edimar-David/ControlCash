@@ -5,7 +5,6 @@ import com.novaStack.backend.dto.auth.LoginRequestDTO;
 import com.novaStack.backend.dto.auth.RegisterRequestDTO;
 import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

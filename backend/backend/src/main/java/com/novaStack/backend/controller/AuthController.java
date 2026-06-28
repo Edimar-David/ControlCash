@@ -8,7 +8,6 @@ import com.novaStack.backend.dto.auth.UserResponseDTO;
 import com.novaStack.backend.infra.security.TokenService;
 import com.novaStack.backend.service.AuthService;
 import com.novaStack.backend.service.CookieService;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
@@ -47,17 +46,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletResponse response) {
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        cookieService.clearCookie(response);
 
-        Cookie cookie = new Cookie("access_token", "");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @NonNull

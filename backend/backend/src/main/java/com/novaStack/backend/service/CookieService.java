@@ -21,4 +21,16 @@ public class CookieService {
         httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 
+    public void clearCookie(HttpServletResponse response){
+        ResponseCookie cookie = ResponseCookie.from("access_token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+    }
 }
