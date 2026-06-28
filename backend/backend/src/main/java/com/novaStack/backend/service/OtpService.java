@@ -34,6 +34,8 @@ public class OtpService {
         repository.save(otp);
     }
 
-
+    public void deleteOtp(){
+        repository.deleteByTime(LocalDateTime.now());
+    }
 
 }
