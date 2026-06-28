@@ -8,8 +8,6 @@ import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,14 +20,16 @@ public class AuthService {
     private final UserRepository repository;
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
+    private final CookieService cookieService;
 
-    public AuthService(UserRepository repository, TokenService tokenService, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository repository, TokenService tokenService, PasswordEncoder passwordEncoder, CookieService cookieService) {
         this.repository = repository;
         this.tokenService = tokenService;
         this.passwordEncoder = passwordEncoder;
+        this.cookieService = cookieService;
     }
 
-    public ResponseEntity<?> login(LoginRequestDTO dto, HttpServletResponse response) {
+    public ResponseEntity<?> login(LoginRequestDTO dto, HttpServletResponse httpServletResponse) {
         Optional<User> userOptional = this.repository.findByEmail(dto.email());
         if (userOptional.isEmpty()) {
             throw new IllegalArgumentException("Invalid credentials");
@@ -40,33 +40,25 @@ public class AuthService {
             throw new IllegalArgumentException("Invalid credentials");
         }
 
-        return authenticateUser(response, user);
+        return authenticateUser(user, httpServletResponse);
     }
 
-    public ResponseEntity<?> register(RegisterRequestDTO dto, HttpServletResponse response) {
+    public ResponseEntity<?> register(RegisterRequestDTO dto, HttpServletResponse httpServletResponse) {
         Optional<User> userOptional = this.repository.findByEmail(dto.email());
-        if(userOptional.isEmpty()){
+        if(userOptional.isPresent()) {
+            throw new IllegalArgumentException("Email already registered");
+        }
             User user = new User(dto.name(), dto.email(), passwordEncoder.encode(dto.password()));
             this.repository.save(user);
-            return authenticateUser(response, user);
-        }
-        return ResponseEntity.badRequest().build();
+            return authenticateUser(user, httpServletResponse);
     }
 
 
     @NonNull
-    private ResponseEntity<?> authenticateUser(HttpServletResponse response, User user) {
+    private ResponseEntity<?> authenticateUser(User user, HttpServletResponse httpServletResponse) {
         String token = this.tokenService.generateToken(user);
+        cookieService.createCookie(token, httpServletResponse);
 
-        ResponseCookie cookie = ResponseCookie.from("access_token", token)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .sameSite("Lax")
-                .maxAge(60 * 60 * 24)
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
         return ResponseEntity.ok(new UserResponseDTO(user.getName()));
     }
 }

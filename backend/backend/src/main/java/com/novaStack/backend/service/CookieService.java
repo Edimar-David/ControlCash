@@ -7,5 +7,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CookieService {
+    public void createCookie(String token, HttpServletResponse httpServletResponse){
+        ResponseCookie cookie = ResponseCookie.from("access_token", token)
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(60 * 60 * 24)
+                .build();
+
+        httpServletResponse.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
 
 }
