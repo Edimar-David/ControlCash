@@ -3,6 +3,7 @@ package com.novaStack.backend.service;
 import com.novaStack.backend.model.OtpCode;
 import com.novaStack.backend.repository.OtpRepository;
 import jakarta.mail.MessagingException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ public class OtpService {
         return String.valueOf(value);
     }
 
+    @Async
     public void createOtp(String email) throws MessagingException, IOException {
         String code = generateOtp();
         emailService.sendHtmlEmail(email, "codigo de verificação", code);
