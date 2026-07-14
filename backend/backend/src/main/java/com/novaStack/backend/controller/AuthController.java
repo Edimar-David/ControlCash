@@ -9,10 +9,13 @@ import com.novaStack.backend.infra.security.TokenService;
 import com.novaStack.backend.service.AuthService;
 import com.novaStack.backend.service.CookieService;
 import com.novaStack.backend.service.OtpService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,14 +37,14 @@ public class AuthController {
     public ResponseEntity<UserResponseDTO> login(@RequestBody LoginRequestDTO dto, HttpServletResponse httpServletResponse){
 
         AuthenticatedResponseDTO user = service.login(dto);
-        otpService.createOtp(user.email());
 
         return authenticateUser(user, httpServletResponse);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody RegisterRequestDTO dto, HttpServletResponse httpServletResponse){
+    public ResponseEntity<UserResponseDTO> register(@RequestBody RegisterRequestDTO dto, HttpServletResponse httpServletResponse) throws MessagingException, IOException {
         AuthenticatedResponseDTO user = service.register(dto);
+        otpService.createOtp(user.email());
 
         return authenticateUser(user, httpServletResponse);
     }
