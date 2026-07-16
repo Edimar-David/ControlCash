@@ -50,6 +50,13 @@ public class AuthService {
             return;
     }
 
+    public User activatePendingUser(PendingUser pendingUser) {
+        User user = new User(pendingUser.getName(), pendingUser.getEmail(), pendingUser.getPassword());
+        this.repository.save(user);
+
+        return user;
+    }
+
     private AuthenticatedResponseDTO convertToResponseDTO(User user){
 
         return new AuthenticatedResponseDTO(
