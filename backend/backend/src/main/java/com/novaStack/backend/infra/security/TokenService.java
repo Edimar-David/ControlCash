@@ -18,14 +18,14 @@ public class TokenService {
     @Value("api.security.token.secret")
     private String secretkey;
 
-    public String generateToken(AuthenticatedResponseDTO user){
+    public String generateToken(String email){
 
     try {
         Algorithm algorithm = Algorithm.HMAC256(secretkey);
 
         String token = JWT.create()
                 .withIssuer("login-auth-api")
-                .withSubject(user.email())
+                .withSubject(email)
                 .withExpiresAt(this.generateExpirationDate())
                 .sign(algorithm);
 
