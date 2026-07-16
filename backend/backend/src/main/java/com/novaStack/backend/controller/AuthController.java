@@ -43,8 +43,8 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody RegisterRequestDTO dto, HttpServletResponse httpServletResponse) throws MessagingException, IOException {
-        AuthenticatedResponseDTO user = service.register(dto);
-        otpService.createOtp(user.email());
+        service.register(dto);
+        otpService.createOtp(dto.email());
 
         return ResponseEntity.noContent().build();
     }
