@@ -1,14 +1,18 @@
 package com.novaStack.backend.service;
 
 import com.novaStack.backend.model.OtpCode;
+import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.OtpRepository;
+import com.novaStack.backend.repository.UserRepository;
 import jakarta.mail.MessagingException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class OtpService {
@@ -17,6 +21,7 @@ public class OtpService {
 
     private final OtpRepository repository;
     private final EmailService emailService;
+
 
     public OtpService(OtpRepository repository, EmailService emailService) {
         this.repository = repository;
@@ -45,4 +50,19 @@ public class OtpService {
         repository.deleteByTime(LocalDateTime.now());
     }
 
+    public void verify(String otp, String email) {
+        Optional<OtpCode> code = repository.findFirstByEmailOrderByIdDesc(email);
+
+
+        if(code.isPresent()){
+            if(code.get().getOtpHash().equals(otp)){
+                return;
+            }
+
+            throw new RuntimeException("codigo incorreto");
+        }else{
+            throw new RuntimeException("codigo não encontrado no banco de dados");
+        }
+
+    }
 }

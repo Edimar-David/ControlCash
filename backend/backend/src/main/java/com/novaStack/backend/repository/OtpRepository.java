@@ -8,9 +8,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface OtpRepository extends JpaRepository<OtpCode, Long> {
+
+    Optional<OtpCode> findFirstByEmailOrderByIdDesc(String email);
 
     @Modifying
     @Transactional

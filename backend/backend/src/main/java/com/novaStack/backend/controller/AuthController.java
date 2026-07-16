@@ -42,11 +42,11 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@RequestBody RegisterRequestDTO dto, HttpServletResponse httpServletResponse) throws MessagingException, IOException {
+    public ResponseEntity<Void> register(@RequestBody RegisterRequestDTO dto, HttpServletResponse httpServletResponse) throws MessagingException, IOException {
         AuthenticatedResponseDTO user = service.register(dto);
         otpService.createOtp(user.email());
 
-        return authenticateUser(user, httpServletResponse);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/logout")
@@ -58,7 +58,7 @@ public class AuthController {
 
     @NonNull
     private ResponseEntity<UserResponseDTO> authenticateUser(AuthenticatedResponseDTO user, HttpServletResponse httpServletResponse) {
-        String token = this.tokenService.generateToken(user);
+        String token = this.tokenService.generateToken(user.email());
         cookieService.createCookie(token, httpServletResponse);
 
         return ResponseEntity.ok(new UserResponseDTO(user.name()));
