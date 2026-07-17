@@ -53,7 +53,7 @@ public class AuthService {
     public User activatePendingUser(PendingUser pendingUser) {
         User user = new User(pendingUser.getName(), pendingUser.getEmail(), pendingUser.getPassword());
         this.repository.save(user);
-
+        this.pendingUserRepository.delete(pendingUser);
         return user;
     }
 
