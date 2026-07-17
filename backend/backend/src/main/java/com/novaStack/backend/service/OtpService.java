@@ -1,8 +1,10 @@
 package com.novaStack.backend.service;
 
 import com.novaStack.backend.model.OtpCode;
+import com.novaStack.backend.model.PendingUser;
 import com.novaStack.backend.model.User;
 import com.novaStack.backend.repository.OtpRepository;
+import com.novaStack.backend.repository.PendingUserRepository;
 import com.novaStack.backend.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,15 @@ public class OtpService {
 
     private final OtpRepository repository;
     private final EmailService emailService;
+    private final PendingUserRepository pendingUserRepository;
+    private final AuthService authService;
 
 
-    public OtpService(OtpRepository repository, EmailService emailService) {
+    public OtpService(OtpRepository repository, EmailService emailService, PendingUserRepository pendingUserRepository, AuthService authService) {
         this.repository = repository;
         this.emailService = emailService;
+        this.pendingUserRepository = pendingUserRepository;
+        this.authService = authService;
     }
 
     private String generateOtp() {
@@ -52,10 +58,12 @@ public class OtpService {
 
     public void verify(String otp, String email) {
         Optional<OtpCode> code = repository.findFirstByEmailOrderByIdDesc(email);
+        PendingUser user = this.pendingUserRepository.findByEmail(email);
 
 
         if(code.isPresent()){
             if(code.get().getOtpHash().equals(otp)){
+                authService.activatePendingUser(user);
                 return;
             }
 

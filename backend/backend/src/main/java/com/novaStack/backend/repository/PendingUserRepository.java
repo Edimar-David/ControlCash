@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PendingUserRepository extends JpaRepository<PendingUser, Long> {
+    PendingUser findByEmail(String email);
 }
