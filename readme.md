@@ -1,107 +1,198 @@
 # ControlCash API
 
-Sistema de gestão financeira pessoal construído com Java e Spring Boot.
+API REST para gerenciamento financeiro pessoal desenvolvida com Java e Spring Boot.
 
-A aplicação disponibiliza uma API REST segura para gerenciamento financeiro pessoal, oferecendo autenticação JWT, isolamento de dados por usuário, consultas dinâmicas com JPQL, paginação e geração de indicadores financeiros para acompanhamento de receitas, despesas e metas.
+O ControlCash foi criado para permitir que cada usuário registre receitas, despesas e metas financeiras de forma segura, disponibilizando indicadores e resumos financeiros que auxiliam no acompanhamento da vida financeira.
 
-## Status
+A aplicação foi desenvolvida utilizando uma arquitetura em camadas, autenticação JWT baseada em cookies HTTP e consultas otimizadas com Spring Data JPA.
 
-* Em desenvolvimento
-* Demonstração pública ainda não disponível
+>  Projeto em desenvolvimento.
+
+---
+
+# Sobre o Projeto
+
+Controlar gastos e acompanhar a evolução financeira costuma ser uma tarefa difícil quando as informações ficam distribuídas entre planilhas, aplicativos diferentes ou anotações.
+O objetivo do ControlCash é concentrar essas informações em uma única API, permitindo que aplicações clientes consultem, registrem e organizem dados financeiros de forma segura e eficiente.
+
+Além das operações básicas de cadastro, o sistema também fornece indicadores financeiros calculados diretamente no banco de dados, reduzindo processamento na aplicação e melhorando o desempenho das consultas.
 
 ---
 
-## Sobre o Projeto
+# Funcionalidades
 
-Muitas pessoas registram receitas e despesas de forma dispersa ou não possuem uma visão consolidada de sua situação financeira.
+## Cadastro e autenticação
 
-O ControlCash foi desenvolvido para centralizar o gerenciamento financeiro pessoal em uma única plataforma, permitindo o acompanhamento de gastos, receitas e metas financeiras por meio de dashboards e relatórios que facilitam a tomada de decisões.
+O sistema permite o cadastro de usuários e autenticação utilizando Spring Security.
 
---- 
-
-## Funcionalidades
-
-* Cadastro e autenticação de usuários
-* Controle de acesso com JWT
-* CRUD completo de transações financeiras
-* Paginação com filtros dinâmicos para consultas de transações
-* Consultas dinâmicas utilizando JPQL
-* Agregações financeiras processadas diretamente no banco de dados
-* Resumo financeiro mensal
-* Isolamento de dados por usuário
+Após o login é gerado um JWT que é enviado automaticamente em um cookie HTTP, sendo utilizado nas próximas requisições para identificar o usuário autenticado.
 
 ---
+
+## Gerenciamento de transações
+
+Cada usuário possui seu próprio conjunto de transações financeiras.
+
+É possível:
+- cadastrar receitas
+- cadastrar despesas
+- editar registros
+- excluir movimentações
+- consultar transações individualmente
+
+Todas as operações respeitam o isolamento dos dados do usuário autenticado.
+
+---
+
+## Consultas com filtros e Paginação
+
+As consultas de transações permitem combinar diferentes filtros, como:
+- período
+- categoria
+- tipo de movimentação
+- descrição
+- ordenação
+
+As consultas são construídas dinamicamente utilizando JPQL.
+
+Os resultados são retornados de forma paginada, permitindo consultas eficientes mesmo com grande quantidade de registros.
+
+O cliente pode definir:
+- página
+- quantidade de registros
+- ordenação
+
+---
+
+## Resumo financeiro
+
+A API disponibiliza informações consolidadas para facilitar a visualização da situação financeira do usuário.
+
+São calculados:
+
+- total de receitas
+- total de despesas
+- saldo
+
+Essas agregações são processadas diretamente pelo banco de dados utilizando funções de agregação.
+
+---
+
+# Segurança
+
+A autenticação foi desenvolvida utilizando Spring Security e JWT.
+
+Entre as principais medidas implementadas estão:
+
+- PasswordEncoder para armazenamento seguro das senhas
+- autenticação baseada em JWT
+- token enviado através de cookies HTTP
+- rotas protegidas
+- isolamento completo dos dados entre usuários
+- filtros de autenticação do Spring Security
+
+---
+
 # Arquitetura
 
+O projeto segue uma arquitetura em camadas para separar responsabilidades e facilitar manutenção.
 
- 
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+Database
+
+### Camadas
+
+#### Controller
+Responsável por receber as requisições HTTP, validar parâmetros e retornar as respostas da API.
+
+#### Service
+Contém toda a regra de negócio da aplicação.
+
+#### Repository
+Responsável pela comunicação com o banco de dados utilizando Spring Data JPA.
+
+#### DTO
+Objetos utilizados para entrada e saída de dados da API.
+
+#### Security
+Implementação da autenticação, autorização e filtros de segurança.
+
+#### Exception
+Tratamento global das exceções retornadas pela API.
+
+#### Config
+Classes responsáveis pelas configurações do Spring.
+
 ---
 
-## - Tecnologias
+# Tecnologias
 
-* Java 21
-* Spring Boot
-* Maven
-* Spring Security
-* JWT (JSON Web Token)
-* Spring Data JPA
-* Hibernate
-* PostgreSQL
+- Java 21
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- Hibernate
+- PostgreSQL
+- Maven
+- JWT
 
 ---
+
 # Estrutura do Projeto
 
+src
+├── config
+├── controller
+├── dto
+├── entity
+├── exception
+├── repository
+├── security
+├── service
+└── util
 
----
-
-## Autenticação
-
-A API utiliza JWT armazenado em cookie.
-
-Após o login ou registro, o backend envia automaticamente um cookie contendo o token de autenticação.
-
-As rotas protegidas utilizam esse cookie para identificar o usuário autenticado, eliminando a necessidade de armazenar tokens no localStorage do frontend.
-
-### Benefícios
-
-* Maior segurança contra exposição do token
-* Menor risco de acesso indevido via JavaScript
-* Fluxo de autenticação mais próximo de aplicações utilizadas em produção
 
 ---
 
 # Endpoints
 
+| Método | Endpoint | Descrição |
+|---------|----------|-----------|
+| POST | /auth/register | Cadastro de usuário |
+| POST | /auth/login | Login |
+| POST | /transactions | Criar transação |
+| GET | /transactions | Listar transações |
+| GET | /transactions/{id} | Buscar transação |
+| PUT | /transactions/{id} | Atualizar transação |
+| DELETE | /transactions/{id} | Excluir transação |
+| GET | /dashboard/summary | Resumo financeiro |
+
 ---
 
-## Segurança
-
-* Senhas protegidas com PasswordEncoder
-* JWT armazenado em cookie
-* Rotas protegidas por autenticação
-* Isolamento de dados por usuário
-* Filtros de segurança via Spring Security
-
----
-
-## Como Executar
+# Como executar
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/...
+cd controlcash-api
 
-cd seu-repositorio
+Configure o arquivo application.properties.
+
+spring.datasource.url=
+spring.datasource.username=
+spring.datasource.password=
+
+Execute:
 
 ./mvnw spring-boot:run
-```
-
----
-
-## Arquitetura
-
-O projeto segue uma separação de responsabilidades baseada em:
-
-* Controller
-* Service
-* Repository
-* DTO
-* Security
+Próximas funcionalidades
+ Swagger/OpenAPI
+ Docker
+ Testes unitários
+ Testes de integração
+ Deploy
+ CI/CD com GitHub Actions
