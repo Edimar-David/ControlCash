@@ -41,9 +41,9 @@ public class OtpService {
     }
 
     @Async
-    public void createOtp(String email) throws MessagingException, IOException {
+    public void createOtp(String email, String templateName) throws MessagingException, IOException {
         String code = generateOtp();
-        emailService.sendHtmlEmail(email, "codigo de verificação", code);
+        emailService.sendHtmlEmail(email, "codigo de verificação", code, templateName);
         OtpCode otp = new OtpCode(
                 email,
                 code,
@@ -71,6 +71,10 @@ public class OtpService {
         }else{
             throw new RuntimeException("codigo não encontrado no banco de dados");
         }
+
+    }
+
+    public void forgotPassword(String email) {
 
     }
 }

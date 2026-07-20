@@ -18,16 +18,17 @@ public class EmailService {
     public EmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
-    private String loadTemplate() throws IOException {
+
+    private String loadTemplate(String templateName) throws IOException {
 
         Resource resource =
-                new ClassPathResource("templates/email/OtpEmail.html");
+                new ClassPathResource("templates/email/" + templateName);
 
         return new String(resource.getInputStream().readAllBytes(),
                 StandardCharsets.UTF_8);
     }
 
-    public void sendHtmlEmail(String toEmail, String subject, String otp)
+    public void sendHtmlEmail(String toEmail, String subject, String otp, String templateName)
             throws MessagingException, IOException {
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -38,7 +39,7 @@ public class EmailService {
         helper.setFrom("edimarjr51@gmail.com", "Nova Stack");
         helper.setTo(toEmail);
         helper.setSubject(subject);
-        String html = loadTemplate();
+        String html = loadTemplate(templateName);
         html = html.replace("{{OTP}}", otp);
         helper.setText(html, true);
 
