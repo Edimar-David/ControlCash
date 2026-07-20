@@ -1,10 +1,7 @@
 package com.novaStack.backend.controller;
 
 
-import com.novaStack.backend.dto.auth.AuthenticatedResponseDTO;
-import com.novaStack.backend.dto.auth.LoginRequestDTO;
-import com.novaStack.backend.dto.auth.RegisterRequestDTO;
-import com.novaStack.backend.dto.auth.UserResponseDTO;
+import com.novaStack.backend.dto.auth.*;
 import com.novaStack.backend.infra.security.TokenService;
 import com.novaStack.backend.service.AuthService;
 import com.novaStack.backend.service.CookieService;
@@ -44,7 +41,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody RegisterRequestDTO dto, HttpServletResponse httpServletResponse) throws MessagingException, IOException {
         service.register(dto);
-        otpService.createOtp(dto.email());
+        otpService.createOtp(dto.email(), "OtpEmailCreateAccount.html");
 
         return ResponseEntity.noContent().build();
     }
@@ -67,6 +64,17 @@ public class AuthController {
     @GetMapping("/login")
     public ResponseEntity<Void> deleteOtp(){
         otpService.deleteOtp();
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Void> forgotPassword(@RequestBody ForgotPasswordRequestDTO forgotPassword) throws MessagingException, IOException {
+
+        System.out.println("Entrou no forgotPassword");
+
+        service.ensureEmailExists(forgotPassword.email());
+        otpService.createOtp(forgotPassword.email(), "OtpEmailForgotPassword.html");
+
         return ResponseEntity.noContent().build();
     }
 }

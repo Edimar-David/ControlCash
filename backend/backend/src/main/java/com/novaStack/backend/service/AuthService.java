@@ -50,6 +50,12 @@ public class AuthService {
             return;
     }
 
+    public void ensureEmailExists(String email) {
+        User user = repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        return;
+    }
+
     public User activatePendingUser(PendingUser pendingUser) {
         User user = new User(pendingUser.getName(), pendingUser.getEmail(), pendingUser.getPassword());
         this.repository.save(user);
@@ -65,4 +71,5 @@ public class AuthService {
                 user.getEmail()
         );
     }
+
 }
